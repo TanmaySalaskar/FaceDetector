@@ -17,7 +17,7 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
-from kivy.uix.image import Image
+from kivy.uix.image import Image as KivyImage
 from kivy.graphics.texture import Texture
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -48,17 +48,48 @@ def load_known_faces(directory_path):
                 known_faces[filename] = encodings[0]
     return known_faces
 
+# Define the logo screen of the app.
+class LogoScreen(Screen):
+    def __init__(self, **kwargs):
+        super(LogoScreen, self).__init__(**kwargs)
+        self.layout = FloatLayout()
+
+        # Add logo image
+        self.logo_image = KivyImage(source='logo.png',  # Replace with your logo path
+                                    allow_stretch=True,
+                                    keep_ratio=False,
+                                    size_hint=(0.8, 1),  # Adjust size as needed
+                                    pos_hint={'center_x': 0.5, 'center_y': 0.5})  # Center the image
+        self.layout.add_widget(self.logo_image)
+
+        # Schedule transition to the login page after 4 seconds (4000 milliseconds)
+        Clock.schedule_once(self.transition_to_login, 4)
+
+        self.add_widget(self.layout)
+
+    def transition_to_login(self, dt):
+        self.manager.current = 'login'
+
 # Define the login screen of the app.
 class LoginPage(Screen):
     def __init__(self, **kwargs):
         super(LoginPage, self).__init__(**kwargs)
         self.layout = FloatLayout()
 
+        # Add logo image
+        self.logo_image = KivyImage(source='logo.png',  # Replace with your logo path
+                                    allow_stretch=True,
+                                    keep_ratio=False,
+                                    size_hint=(None, None),
+                                    size=(200, 200),  # Adjust size as needed
+                                    pos_hint={'center_x': 0.5, 'top': 0.95})  # Position the logo
+        self.layout.add_widget(self.logo_image)
+
         # Title label for the login page.
         self.title = Label(text='ADMIN LOGIN',
                            size_hint=(None, None),
                            size=(400, 60),
-                           pos_hint={'center_x': 0.5, 'top': 0.85},
+                           pos_hint={'center_x': 0.5, 'top': 0.7},
                            font_size='32sp',
                            bold=True,
                            color=(0, 0.5, 0.8, 1))
@@ -68,7 +99,7 @@ class LoginPage(Screen):
         self.username = TextInput(hint_text='Username',
                                   size_hint=(None, None),
                                   size=(300, 50),
-                                  pos_hint={'center_x': 0.5, 'center_y': 0.6},
+                                  pos_hint={'center_x': 0.5, 'center_y': 0.55},
                                   padding_y=(10, 10),
                                   background_normal='',
                                   background_color=(1, 1, 1, 1),
@@ -82,7 +113,7 @@ class LoginPage(Screen):
                                   password=True,
                                   size_hint=(None, None),
                                   size=(300, 50),
-                                  pos_hint={'center_x': 0.5, 'center_y': 0.45},
+                                  pos_hint={'center_x': 0.5, 'center_y': 0.4},
                                   padding_y=(10, 10),
                                   background_normal='',
                                   background_color=(1, 1, 1, 1),
@@ -95,7 +126,7 @@ class LoginPage(Screen):
         self.login_button = Button(text='Login',
                                    size_hint=(None, None),
                                    size=(300, 50),
-                                   pos_hint={'center_x': 0.5, 'center_y': 0.3},
+                                   pos_hint={'center_x': 0.5, 'center_y': 0.25},
                                    background_color=(0, 0.5, 1, 1),
                                    color=(1, 1, 1, 1),
                                    font_size='20sp',
@@ -106,7 +137,7 @@ class LoginPage(Screen):
         # Error message label.
         self.error_message = Label(size_hint=(None, None),
                                    size=(300, 30),
-                                   pos_hint={'center_x': 0.5, 'center_y': 0.2},
+                                   pos_hint={'center_x': 0.5, 'center_y': 0.15},
                                    color=(1, 0, 0, 1),
                                    font_size='16sp',
                                    halign='center')
@@ -148,7 +179,7 @@ class FaceDetectionScreen(Screen):
 
         # Box layout for camera feed.
         self.camera_box = BoxLayout(orientation='vertical', size_hint=(1, 0.4))
-        self.image = Image(size_hint=(1, 0.9))
+        self.image = KivyImage(size_hint=(1, 0.9))
         self.camera_box.add_widget(self.image)
 
         # Box layout for displaying detection results and buttons.
@@ -253,7 +284,7 @@ class FaceDetectionScreen(Screen):
 
             # Convert frame to texture and update the image widget
             buf1 = cv2.flip(frame, -1)
-            buf = buf1.tostring()
+            buf = buf1.tobytes()
             image_texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
             image_texture.blit_buffer(buf, colorfmt='bgr', bufferfmt='ubyte')
             self.image.texture = image_texture
@@ -274,8 +305,12 @@ class FaceDetectionScreen(Screen):
 class FaceDetectionApp(App):
     def build(self):
         sm = ScreenManager()
+        sm.add_widget(LogoScreen(name='logo'))
         sm.add_widget(LoginPage(name='login'))
         sm.add_widget(FaceDetectionScreen(name='main'))
+
+        # Set the initial screen to be the logo screen
+        sm.current = 'logo'
         return sm
 
 # Run the app.
