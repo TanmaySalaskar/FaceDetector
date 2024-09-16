@@ -56,9 +56,9 @@ class LogoScreen(Screen):
 
         # Add logo image
         self.logo_image = KivyImage(source='logo.png',  # Replace with your logo path
-                                    allow_stretch=True,
+                                    allow_stretch=False,
                                     keep_ratio=False,
-                                    size_hint=(0.8, 1),  # Adjust size as needed
+                                    size_hint=(1, 1),  # Adjust size as needed
                                     pos_hint={'center_x': 0.5, 'center_y': 0.5})  # Center the image
         self.layout.add_widget(self.logo_image)
 
@@ -223,7 +223,7 @@ class FaceDetectionScreen(Screen):
     def start_camera(self, instance):
         # Start capturing video from the camera and schedule regular updates.
         self.capture = cv2.VideoCapture(0)
-        Clock.schedule_interval(self.update, 1.0 / 30.0)  # Update at 30 FPS
+        Clock.schedule_interval(self.update, 1.0 / 15.0)  # Update at 30 FPS
         self.detected_info = "DETECTING FACES..."
         self.label.text = self.detected_info
         self.open_camera_button.opacity = 0
