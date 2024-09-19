@@ -68,8 +68,8 @@ class LogoScreen(Screen):
                                      size_hint=(1, 1),
                                      pos_hint={'center_x': 0.5, 'center_y': 0.5})
         self.layout.add_widget(self.logo_image)
-        # Schedule transition to the login screen after 4 seconds
-        Clock.schedule_once(self.transition_to_login, 4)
+        # Schedule transition to the login screen after 3.5 seconds
+        Clock.schedule_once(self.transition_to_login, 3.5)
         self.add_widget(self.layout)
 
     def transition_to_login(self, dt):
@@ -155,7 +155,7 @@ class LoginPage(Screen):
         # Validate username and password
         if not username or not password:
             self.error_message.text = 'Username and Password are required!'
-        elif username == '123' and password == '123':  # Hardcoded credentials for simplicity
+        elif username == 'Shweta' and password == '123':  # Hardcoded credentials for simplicity
             self.manager.current = 'main'  # Transition to the main screen
         else:
             self.error_message.text = 'Invalid username or password!'
@@ -171,7 +171,7 @@ class FaceDetectionScreen(Screen):
 
         self.layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
         # Title for face detection app
-        title_label = Label(text="FACE DETECTION APP",
+        title_label = Label(text="LICENSE DETECTOR APP",
                             size_hint=(1, 0.1),
                             color=(0, 0.5, 0.8, 1),
                             bold=True, font_size='30sp')
@@ -221,7 +221,7 @@ class FaceDetectionScreen(Screen):
 
     def start_camera(self, instance):
         self.capture = cv2.VideoCapture(0)  # Start video capture from the camera
-        Clock.schedule_interval(self.update, 1.0 / 30.0)  # Update frame every 1/30 seconds
+        Clock.schedule_interval(self.update, 1.0 / 15.0)  # Update frame every 1/15 seconds
         self.open_camera_button.opacity = 0  # Hide the open camera button
         self.show_details_button.opacity = 0  # Hide the show details button
         self.result_label.text = "DETECTING..."  # Update label to show detecting status
